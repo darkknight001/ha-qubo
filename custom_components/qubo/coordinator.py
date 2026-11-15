@@ -119,6 +119,17 @@ class QuboDataUpdateCoordinator(DataUpdateCoordinator[dict[str, QuboAirPurifier]
             except QuboError as err:
                 _LOGGER.debug("Failed to refresh %s: %s", purifier.name, err)
 
+            # The purifier does not sample air quality on its own schedule: it
+            # reports a new value only when asked, so the shadow otherwise keeps
+            # returning the same aqiStatus_PM25 indefinitely while the vendor app
+            # (which does ask) shows current data. Request a sample each cycle;
+            # the device answers asynchronously, so it lands in the shadow by the
+            # next refresh.
+            try:
+                await purifier.send_service_command("aqiRefresh", "refresh")
+            except QuboError as err:
+                _LOGGER.debug("aqiRefresh failed for %s: %s", purifier.name, err)
+
         return purifiers
 
     async def async_close(self) -> None:
