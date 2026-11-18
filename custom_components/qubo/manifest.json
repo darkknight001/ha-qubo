@@ -10,7 +10,7 @@
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/piyushparkash/ha-qubo/issues",
   "requirements": [
-    "qubopy[mqtt]>=0.3.0"
+    "qubopy[mqtt]>=0.3.2"
   ],
   "version": "0.3.3"
 }
